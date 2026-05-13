@@ -1,0 +1,21 @@
+{
+  "agent_id": "agent.local",
+  "authority_scope": "user:conformance",
+  "backend": "inmemory",
+  "checker_version": "cmgl.checker.v1",
+  "content": "memory",
+  "content_digest": "sha256:c064fbca9d9de8dd9bb0624984403b28d0da807a69365d4f7fb09123ecb0c405",
+  "created_at": "2026-01-01T00:00:00Z",
+  "event_type": "memory_write",
+  "lane": "user_claim",
+  "memory_id": "mem-conformance",
+  "memory_update_id": "update-conformance",
+  "provenance_depth": 0,
+  "run_id": "run-conformance",
+  "schema_version": "cmgl.memory_event.v1",
+  "source_event_hashes": [],
+  "status": "certified",
+  "trace_id": "trace-conformance",
+  "valid_from": null,
+  "valid_to": null
+}

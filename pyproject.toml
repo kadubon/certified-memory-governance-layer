@@ -1,0 +1,129 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cmgl"
+version = "1.1.0"
+description = "Certified Memory Governance Layer for Long-Running Agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [
+  { name = "CMGL maintainers" }
+]
+keywords = ["agents", "memory", "governance", "audit", "ledger"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Security",
+  "Typing :: Typed",
+]
+dependencies = [
+  "pydantic>=2",
+  "rich>=13",
+  "tomli>=2; python_version < '3.11'",
+  "typer>=0.12",
+]
+
+[project.optional-dependencies]
+mem0 = ["mem0ai"]
+graphiti = ["graphiti-core"]
+langmem = ["langmem"]
+langgraph = ["langgraph"]
+adapters = ["mem0ai", "graphiti-core", "langmem", "langgraph"]
+signing = ["cryptography"]
+
+[dependency-groups]
+dev = [
+  "build",
+  "mypy",
+  "pip-audit",
+  "pytest",
+  "pytest-cov",
+  "ruff",
+]
+
+[project.scripts]
+cmgl = "cmgl.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/kadubon/certified-memory-governance-layer"
+Issues = "https://github.com/kadubon/certified-memory-governance-layer/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cmgl"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src",
+  "/scripts",
+  "/examples",
+  "/docs",
+  "/README.md",
+  "/LICENSE",
+  "/SECURITY.md",
+  "/CODE_OF_CONDUCT.md",
+  "/DEPENDENCIES.md",
+  "/THIRD_PARTY_NOTICES.md",
+  "/pyproject.toml",
+  "/uv.lock",
+]
+exclude = [
+  "/.cmgl",
+  "/.git",
+  "/.github",
+  "/.mypy_cache",
+  "/.pytest_cache",
+  "/.ruff_cache",
+  "/.venv",
+  "/build",
+  "/dist",
+  "**/__pycache__",
+  "**/*.pyc",
+  "**/*.pyo",
+  "**/*.log",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_any_generics = false
+plugins = ["pydantic.mypy"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = [
+  "mem0.*",
+  "graphiti_core.*",
+  "cryptography.*",
+  "langmem.*",
+  "langgraph.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --strict-config"
+testpaths = ["tests"]
