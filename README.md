@@ -231,6 +231,7 @@ Offline tests use fake clients. Release/main live smoke is separate and should r
 ```bash
 uv run cmgl adapters doctor
 uv run cmgl adapters live-smoke --target all --dry-run
+uv run python scripts/live_adapter_smoke.py --target all
 ```
 
 Live smoke requirements:
@@ -239,6 +240,8 @@ Live smoke requirements:
 - Graphiti: `cmgl[graphiti]`, Neo4j connection (`NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`), and provider environment required by Graphiti.
 - LangMem: `cmgl[langmem]` and local LangGraph `InMemoryStore` for smoke.
 - LangGraph: `cmgl[langgraph]` and local store/state helpers.
+
+When provider secrets are absent, `scripts/live_adapter_smoke.py --target all` skips provider-backed Mem0/Graphiti calls and still runs local LangMem/LangGraph smoke. Add `--require-live-env` when a protected release gate must fail on missing provider configuration.
 
 See `docs/adapters.md` and `docs/live-ci.md` for full live setup.
 

@@ -23,6 +23,7 @@ Before public release, manually enable or verify:
 - run tests, lint, type check, and `pip-audit`
 - run `uv run cmgl doctor --skip-ledger`, `uv run cmgl validate canonical`, and `uv run python scripts/check_publishability.py`
 - run `uv run cmgl adapters live-smoke --target all --dry-run` locally
+- decide whether release/main live CI should use default skip-on-missing-provider-env or strict `--require-live-env`
 - create a clean clone and run the quickstart before tagging release
 - create a clean virtual environment, install the built wheel, and run `cmgl version`
 - test PyPI Trusted Publisher configuration against TestPyPI before the first real release

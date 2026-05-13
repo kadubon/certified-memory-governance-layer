@@ -37,6 +37,13 @@ def live_smoke(
         bool,
         typer.Option("--dry-run", help="Validate live-smoke contract without provider calls."),
     ] = False,
+    require_live_env: Annotated[
+        bool,
+        typer.Option(
+            "--require-live-env",
+            help="Fail if provider-backed live targets are missing required environment.",
+        ),
+    ] = False,
     json_output: Annotated[
         bool, typer.Option("--json", help="Emit machine-readable JSON.")
     ] = False,
@@ -44,7 +51,11 @@ def live_smoke(
     if target not in {"mem0", "graphiti", "langmem", "langgraph", "all"}:
         raise typer.BadParameter("target must be one of: mem0, graphiti, langmem, langgraph, all")
     checked_target = cast(Literal["mem0", "graphiti", "langmem", "langgraph", "all"], target)
-    report = run_live_smoke(target=checked_target, dry_run=dry_run)
+    report = run_live_smoke(
+        target=checked_target,
+        dry_run=dry_run,
+        require_live_env=require_live_env,
+    )
     if json_output:
         print_obj(report, as_json=True)
     else:

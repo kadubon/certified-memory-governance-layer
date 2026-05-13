@@ -44,6 +44,7 @@ def run_live_smoke(
     *,
     target: Literal["mem0", "graphiti", "langmem", "langgraph", "all"] = "all",
     dry_run: bool = False,
+    require_live_env: bool = False,
 ) -> dict[str, Any]:
     targets = list(ADAPTER_TARGETS) if target == "all" else [target]
     checks: list[dict[str, Any]] = []
@@ -51,14 +52,13 @@ def run_live_smoke(
         dependency = _DEPENDENCIES[item]
         checks.append(_import_check(f"optional_dependency:{item}", dependency))
         missing = [name for name in _REQUIRED_ENV[item] if not os.environ.get(name)]
+        env_ok = not missing or dry_run or not require_live_env
         checks.append(
             {
                 "name": f"env:{item}",
-                "ok": not missing or dry_run,
-                "required": not dry_run,
-                "detail": "dry-run"
-                if dry_run
-                else ("configured" if not missing else f"missing: {', '.join(missing)}"),
+                "ok": env_ok,
+                "required": require_live_env and not dry_run,
+                "detail": _env_detail(missing=missing, dry_run=dry_run),
             }
         )
         if dry_run:
@@ -70,15 +70,33 @@ def run_live_smoke(
                     "detail": "not called in dry-run",
                 }
             )
+        elif missing:
+            checks.append(
+                {
+                    "name": f"live_call:{item}",
+                    "ok": not require_live_env,
+                    "required": require_live_env,
+                    "detail": f"skipped because required environment is missing: {', '.join(missing)}",
+                }
+            )
         else:
             checks.append(_run_live_target(item))
     return {
         "schema_version": "cmgl.live_adapter_smoke_report.v1",
         "target": target,
         "dry_run": dry_run,
+        "require_live_env": require_live_env,
         "ok": all(bool(item["ok"]) for item in checks if item["required"]),
         "checks": checks,
     }
+
+
+def _env_detail(*, missing: list[str], dry_run: bool) -> str:
+    if dry_run:
+        return "dry-run"
+    if missing:
+        return f"missing but skipped: {', '.join(missing)}"
+    return "configured"
 
 
 def _import_check(name: str, module_name: str) -> dict[str, Any]:

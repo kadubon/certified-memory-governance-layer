@@ -46,7 +46,15 @@ Protected release/main jobs should run:
 uv run python scripts/live_adapter_smoke.py --target all
 ```
 
-Missing required live secrets must fail the job. A provider failure should be treated as a release blocker unless it is clearly unrelated to CMGL adapter behavior.
+By default, provider-backed targets with missing environment are skipped and local targets still run. This keeps the workflow useful for public repositories before every optional provider is configured.
+
+For a strict environment where all provider-backed live targets are mandatory, run:
+
+```bash
+uv run python scripts/live_adapter_smoke.py --target all --require-live-env
+```
+
+In strict mode, missing required live secrets fail the job before provider clients are constructed. A provider failure after environment validation should be treated as a release blocker unless it is clearly unrelated to CMGL adapter behavior.
 
 ## What The Gate Proves
 

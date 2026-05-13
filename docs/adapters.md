@@ -148,6 +148,7 @@ Offline CI must stay deterministic. Live smoke belongs on release/main branches 
 uv run cmgl adapters doctor
 uv run cmgl adapters live-smoke --target all --dry-run
 uv run python scripts/live_adapter_smoke.py --target all
+uv run python scripts/live_adapter_smoke.py --target all --require-live-env
 ```
 
 Required environment:
@@ -160,3 +161,5 @@ Required environment:
 | LangGraph | Installed `langgraph`; live smoke uses local `InMemoryStore` and no model calls. |
 
 Provider keys must come from the process environment or a secret manager. Do not put keys in `cmgl.toml`, ledgers, examples, fixtures, or issue reports.
+
+Default behavior is skip-on-missing-provider-env. This keeps public release/main workflows usable before every optional live provider is configured. Use `--require-live-env` when your organization wants Mem0/Graphiti missing secrets to fail the live gate.

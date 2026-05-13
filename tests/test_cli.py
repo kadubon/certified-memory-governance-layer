@@ -3,6 +3,7 @@ from __future__ import annotations
 from typer.testing import CliRunner
 
 from cmgl.cli import app
+from cmgl.live_smoke import run_live_smoke
 
 runner = CliRunner()
 
@@ -100,3 +101,29 @@ def test_cli_adapter_diagnostics_are_offline() -> None:
     )
     assert smoke_result.exit_code == 0
     assert '"dry_run":true' in smoke_result.output
+
+
+def test_live_smoke_skips_missing_provider_env(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    for name in ["OPENAI_API_KEY", "NEO4J_URI", "NEO4J_USER", "NEO4J_PASSWORD"]:
+        monkeypatch.delenv(name, raising=False)
+
+    called = False
+
+    def fail_if_called() -> str:
+        nonlocal called
+        called = True
+        raise AssertionError("provider smoke must not be called without env")
+
+    monkeypatch.setattr("cmgl.live_smoke._run_mem0_smoke", fail_if_called)
+    report = run_live_smoke(target="mem0")
+    assert report["ok"] is True
+    assert called is False
+    assert report["checks"][-1]["detail"].startswith("skipped because required environment")
+
+
+def test_live_smoke_can_require_provider_env(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    report = run_live_smoke(target="mem0", require_live_env=True)
+    assert report["ok"] is False
+    assert report["checks"][1]["ok"] is False
+    assert report["checks"][2]["ok"] is False

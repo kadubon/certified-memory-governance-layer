@@ -113,7 +113,7 @@ uv run cmgl adapters doctor
 uv run python scripts/live_adapter_smoke.py --target all
 ```
 
-Missing live secrets should fail the release/main live gate with actionable output. Fork PRs should not receive provider secrets.
+Provider-backed targets with missing live secrets are skipped by default, and local LangMem/LangGraph smoke still runs. Use `--require-live-env` when a release/main gate must fail on missing Mem0/Graphiti configuration. Fork PRs should not receive provider secrets.
 
 ## Release Smoke Testing
 
