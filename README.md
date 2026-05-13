@@ -18,19 +18,31 @@ The project is designed for agent systems that already use Mem0, Graphiti, LangM
 
 CMGL proves procedural admissibility under declared policies, evidence, receipts, and ledger verification. It does not prove that a remembered statement is factually true.
 
-## Install
+## Install And Release Status
+
+`cmgl` is prepared as a stable `1.1.0` package. The PyPI project name currently has no published release, so the PyPI install command below is the intended install path after the manual PyPI Trusted Publishing gate is completed.
+
+After PyPI publication:
 
 ```bash
 uv add cmgl
 ```
 
-For local development from this repository:
+Before PyPI publication, install from GitHub source:
+
+```bash
+uv add "cmgl @ git+https://github.com/kadubon/certified-memory-governance-layer.git"
+```
+
+For local development from a clone:
 
 ```bash
 uv sync --all-extras --dev
 uv run cmgl version
 uv run cmgl doctor --skip-ledger
 ```
+
+Final tag creation, GitHub Release creation, and PyPI upload are manual release gates. See `docs/release-v1.1.0-checklist.md`.
 
 ## 10-Minute Offline Integration
 
@@ -115,6 +127,8 @@ assert layer.verify_ledger().ok
 
 `GovernanceReceiptBundle` is the recommended public result object. It contains the event, candidate, evidence, promotion receipt, ledger append receipts, optional adapter operation receipt, conformance status, and canonical digest.
 
+The stable public API is documented in `docs/api-stability.md`. Top-level imports from `cmgl` are stable when listed there; deeper modules under `cmgl.contracts.*`, `cmgl.commands.*`, and adapter implementation helpers are more specialized and may evolve with deprecation notes.
+
 ## Custom Backend Guard
 
 Use `GuardedMemoryBackend` when you already have persistence callables.
@@ -153,6 +167,8 @@ Adapters are supported safe integration shims. They work with user-supplied clie
 | Custom backend | Supported | Use `GovernanceLayer` or `GuardedMemoryBackend`. |
 
 External records without explicit status or source evidence are downgraded before policy filtering unless you opt into `trusted_results=True`.
+
+Adapter support means stable shim behavior, fake-client tests, optional dependency isolation, and optional live-smoke support. It does not mean CMGL owns cloud accounts, Neo4j, LLM providers, framework graph topology, or every external SDK version.
 
 ## Adapter Examples
 
@@ -334,6 +350,13 @@ uv run cmgl validate canonical
 uv run python -m build
 uv run python scripts/check_publishability.py
 uv run pip-audit
+```
+
+Release preparation also requires:
+
+```bash
+uv build
+uv run python scripts/check_publishability.py
 ```
 
 ## License

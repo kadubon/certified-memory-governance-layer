@@ -103,6 +103,26 @@ def test_cli_adapter_diagnostics_are_offline() -> None:
     assert '"dry_run":true' in smoke_result.output
 
 
+def test_cli_invalid_input_exits_nonzero(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    result = runner.invoke(
+        app,
+        [
+            "memory",
+            "write",
+            "--ledger",
+            str(tmp_path / "ledger.jsonl"),
+            "--content",
+            "invalid lane",
+            "--lane",
+            "not_a_lane",
+            "--scope",
+            "user:test",
+            "--json",
+        ],
+    )
+    assert result.exit_code != 0
+
+
 def test_live_smoke_skips_missing_provider_env(monkeypatch) -> None:  # type: ignore[no-untyped-def]
     for name in ["OPENAI_API_KEY", "NEO4J_URI", "NEO4J_USER", "NEO4J_PASSWORD"]:
         monkeypatch.delenv(name, raising=False)

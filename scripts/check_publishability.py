@@ -17,6 +17,15 @@ except ModuleNotFoundError:  # pragma: no cover
     import tomli as tomllib  # type: ignore[no-redef]
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_VERSION = "1.1.0"
+MANUAL_CHECKLIST = [
+    "Confirm PyPI project name 'cmgl' is available or already owned by this project immediately before publication.",
+    "Configure PyPI Trusted Publisher for kadubon/certified-memory-governance-layer and do not add long-lived PyPI tokens.",
+    "Create GitHub Release v1.1.0 manually using docs/releases/v1.1.0.md.",
+    "Fix GitHub repository topic typo 'puthon' to 'python'.",
+    "Review open Dependabot PRs separately before merging.",
+    "Enable or verify GitHub secret scanning, push protection, CodeQL, dependency review, Dependabot alerts, branch protection, and release restrictions.",
+]
 DELETED_ROOT_FILES = {
     f"{stem}{suffix}"
     for stem, suffix in [
@@ -61,9 +70,13 @@ def main() -> int:
 
     errors.extend(check_deleted_files_absent())
     errors.extend(check_deleted_references())
+    errors.extend(check_required_files())
     errors.extend(check_versions())
+    errors.extend(check_lockfile())
+    errors.extend(check_readme_release_docs())
     errors.extend(check_env_files())
     errors.extend(check_workflows())
+    errors.extend(check_cli_smoke())
     errors.extend(check_archives())
     errors.extend(smoke_wheel())
     return report(errors)
@@ -74,6 +87,8 @@ def report(errors: list[str]) -> int:
         for error in errors:
             print(f"publishability error: {error}", file=sys.stderr)
         return 1
+    for item in MANUAL_CHECKLIST:
+        print(f"manual release checklist: {item}")
     print("publishability checks passed")
     return 0
 
@@ -118,12 +133,32 @@ def check_deleted_references() -> list[str]:
     return errors
 
 
+def check_required_files() -> list[str]:
+    required = [
+        "LICENSE",
+        "SECURITY.md",
+        "THIRD_PARTY_NOTICES.md",
+        "README.md",
+        "CHANGELOG.md",
+        "uv.lock",
+        "docs/api-stability.md",
+        "docs/release-v1.1.0-checklist.md",
+        "docs/releases/v1.1.0.md",
+        "docs/security-github-publication-checklist.md",
+    ]
+    return [
+        f"missing required release file: {name}" for name in required if not (ROOT / name).exists()
+    ]
+
+
 def check_versions() -> list[str]:
     errors: list[str] = []
     project = read_project_metadata()
     version = str(project.get("version", ""))
-    if version != "1.1.0":
-        errors.append(f"project version must be 1.1.0 for this release, got {version!r}")
+    if version != EXPECTED_VERSION:
+        errors.append(
+            f"project version must be {EXPECTED_VERSION} for this release, got {version!r}"
+        )
     classifiers = set(project.get("classifiers", []))
     if "Development Status :: 5 - Production/Stable" not in classifiers:
         errors.append("project classifier must be Production/Stable for v1")
@@ -135,8 +170,12 @@ def check_versions() -> list[str]:
         errors.append("src/cmgl/__init__.py version does not match pyproject")
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    if "1.1.0" not in readme:
-        errors.append("README must state the v1.1.0 public API status")
+    if EXPECTED_VERSION not in readme:
+        errors.append(f"README must state the v{EXPECTED_VERSION} public API status")
+
+    changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    if f"## {EXPECTED_VERSION}" not in changelog:
+        errors.append(f"CHANGELOG.md must contain a {EXPECTED_VERSION} entry")
 
     public_paths = [
         ROOT / "README.md",
@@ -153,6 +192,50 @@ def check_versions() -> list[str]:
     return errors
 
 
+def check_lockfile() -> list[str]:
+    return run_command(["uv", "lock", "--check"], "uv lock --check")
+
+
+def check_readme_release_docs() -> list[str]:
+    errors: list[str] = []
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    required_readme_phrases = [
+        "After PyPI publication",
+        "Before PyPI publication, install from GitHub source",
+        "uv add cmgl",
+        'uv add "cmgl @ git+https://github.com/kadubon/certified-memory-governance-layer.git"',
+        "docs/api-stability.md",
+        "docs/release-v1.1.0-checklist.md",
+    ]
+    for phrase in required_readme_phrases:
+        if phrase not in readme:
+            errors.append(f"README missing required install/API/release phrase: {phrase}")
+
+    required_ci_commands = [
+        "uv lock",
+        "uv sync --locked",
+        "uv run ruff check .",
+        "uv run ruff format --check .",
+        "uv run mypy src",
+        "uv run pytest",
+        "uv run python scripts/check_publishability.py",
+    ]
+    for command in required_ci_commands:
+        if command not in readme:
+            errors.append(f"README missing documented quality command: {command}")
+
+    release_checklist = (ROOT / "docs" / "release-v1.1.0-checklist.md").read_text(encoding="utf-8")
+    for phrase in [
+        "PyPI Trusted Publisher",
+        "Fix repository topic typo `puthon` to `python`",
+        "Dependabot PRs",
+        "GitHub Release",
+    ]:
+        if phrase not in release_checklist:
+            errors.append(f"release checklist missing manual gate: {phrase}")
+    return errors
+
+
 def check_env_files() -> list[str]:
     errors: list[str] = []
     for path in ROOT.rglob(".env*"):
@@ -166,7 +249,14 @@ def check_env_files() -> list[str]:
 
 def check_workflows() -> list[str]:
     workflow_dir = ROOT / ".github" / "workflows"
-    required = ["ci.yml", "security.yml", "publish.yml", "live-adapters.yml"]
+    required = [
+        "ci.yml",
+        "security.yml",
+        "publish.yml",
+        "live-adapters.yml",
+        "dependency-review.yml",
+        "codeql.yml",
+    ]
     errors = [f"missing workflow {name}" for name in required if not (workflow_dir / name).exists()]
     publish = workflow_dir / "publish.yml"
     if publish.exists():
@@ -175,6 +265,20 @@ def check_workflows() -> list[str]:
             errors.append("publish workflow must use OIDC id-token permission")
         if "password:" in text or "PYPI_API_TOKEN" in text:
             errors.append("publish workflow must not use stored PyPI tokens")
+        if "release:" not in text or "tags:" not in text:
+            errors.append("publish workflow must trigger only on release/tag publication paths")
+    return errors
+
+
+def check_cli_smoke() -> list[str]:
+    errors: list[str] = []
+    commands = [
+        ["uv", "run", "cmgl", "version"],
+        ["uv", "run", "cmgl", "doctor", "--skip-ledger"],
+        ["uv", "run", "cmgl", "validate", "canonical"],
+    ]
+    for command in commands:
+        errors.extend(run_command(command, " ".join(command)))
     return errors
 
 
@@ -249,6 +353,22 @@ def smoke_wheel() -> list[str]:
                     f"wheel import reported {completed.stdout.strip()!r}, expected {expected_version}"
                 )
         return errors
+
+
+def run_command(command: list[str], label: str) -> list[str]:
+    completed = subprocess.run(
+        command,
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode == 0:
+        return []
+    stderr = completed.stderr.strip()
+    stdout = completed.stdout.strip()
+    detail = stderr or stdout
+    return [f"{label} failed: {detail}"]
 
 
 def iter_repo_files() -> list[Path]:

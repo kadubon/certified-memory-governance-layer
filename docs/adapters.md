@@ -23,6 +23,15 @@ uv add "cmgl[langmem]"
 uv add "cmgl[langgraph]"
 ```
 
+## Compatibility Matrix
+
+| Adapter | Optional extra | Tested mode | Live-smoke environment | Limitations | Missing dependency behavior |
+| --- | --- | --- | --- | --- | --- |
+| Mem0 | `cmgl[mem0]` | Fake `Memory` / `MemoryClient`-like client for add/search/get/get_all/update/delete; guarded writes; failed persistence receipt. | `OPENAI_API_KEY` or compatible Mem0 provider config; `MEM0_TEST_USER_PREFIX` recommended. | CMGL does not own Mem0 cloud/provider setup or guarantee every Mem0 SDK version. Update/delete require prior binding unless migration override is explicit. | Module imports without Mem0; `load_mem0()` / `require_dependency()` raise `OptionalDependencyError` with install hints. |
+| Graphiti | `cmgl[graphiti]` | Fake async client for `add_episode`, `search`, and `search_`; guarded episode writes; retrieval filtering. | `OPENAI_API_KEY`, `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`. | CMGL does not own Neo4j, LLM, embedder, or Graphiti driver operations. | Module imports without Graphiti; `load_graphiti()` / `require_dependency()` raise `OptionalDependencyError` with install hints. |
+| LangMem | `cmgl[langmem]` | Fake sync and async tools; `.invoke`, `.ainvoke`, callable, and store-like flows. | Local LangGraph `InMemoryStore` where possible; provider keys are application-owned if your LangMem setup needs them. | CMGL does not own long-term store choice or LangChain/LangMem runtime topology. | Module imports without LangMem; `load_langmem()` / `require_dependency()` raise `OptionalDependencyError` with install hints. |
+| LangGraph | `cmgl[langgraph]` | Fake state/store items; retrieval filtering; context-node helper; store search normalization. | Local LangGraph `InMemoryStore`; no model calls. | CMGL does not assume a graph topology or manage graph execution. | Module imports without LangGraph; `load_langgraph()` / `require_dependency()` raise `OptionalDependencyError` with install hints. |
+
 ## Mem0
 
 `Mem0Adapter` supports `Memory` and `MemoryClient`-like objects that expose common `add`, `search`, `get`, `get_all`, `update`, and `delete` methods.
