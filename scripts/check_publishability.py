@@ -19,9 +19,7 @@ except ModuleNotFoundError:  # pragma: no cover
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_VERSION = "1.1.0"
 MANUAL_CHECKLIST = [
-    "Confirm PyPI project name 'cmgl' is available or already owned by this project immediately before publication.",
-    "Configure PyPI Trusted Publisher for kadubon/certified-memory-governance-layer and do not add long-lived PyPI tokens.",
-    "Create GitHub Release v1.1.0 manually using docs/releases/v1.1.0.md.",
+    "Verify PyPI project 'cmgl' remains owned by this project and Trusted Publisher settings remain correct.",
     "Fix GitHub repository topic typo 'puthon' to 'python'.",
     "Review open Dependabot PRs separately before merging.",
     "Enable or verify GitHub secret scanning, push protection, CodeQL, dependency review, Dependabot alerts, branch protection, and release restrictions.",
@@ -200,8 +198,8 @@ def check_readme_release_docs() -> list[str]:
     errors: list[str] = []
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     required_readme_phrases = [
-        "After PyPI publication",
-        "Before PyPI publication, install from GitHub source",
+        "CMGL v1.1.0 is available on PyPI.",
+        "For development from GitHub source",
         "uv add cmgl",
         'uv add "cmgl @ git+https://github.com/kadubon/certified-memory-governance-layer.git"',
         "docs/api-stability.md",

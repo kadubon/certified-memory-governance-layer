@@ -1,6 +1,6 @@
 # CMGL v1.1.0 Release Checklist
 
-This checklist separates automated release-readiness gates from human-only publication steps. Do not publish, tag, or create a GitHub Release until every automated gate passes and the manual gates are reviewed.
+This checklist is retained as a historical/internal maintenance record for the v1.1.0 release. For future releases, adapt the same gates to the target version before tagging or publishing.
 
 ## Automated Local Gates
 
@@ -46,7 +46,7 @@ On Windows, use the corresponding `Scripts/python.exe` and `Scripts/cmgl.exe` pa
 
 ## PyPI Manual Gates
 
-- Confirm `https://pypi.org/pypi/cmgl/json` is still 404 or owned by this project immediately before first publication.
+- Confirm `https://pypi.org/pypi/cmgl/json` is owned by this project before future publication.
 - Configure PyPI Trusted Publisher:
   - owner/repository: `kadubon/certified-memory-governance-layer`
   - workflow: `.github/workflows/publish.yml`
@@ -84,4 +84,4 @@ Do not merge these automatically during the v1.1.0 stabilization. Review each PR
 
 ## Release Status
 
-At the end of this stabilization, the repository should be ready for v1.1.0 after manual publishing setup. Remaining items should be human-gated external actions, not unresolved code, test, packaging, or documentation defects.
+The v1.1.0 release was completed after PyPI Trusted Publishing was configured. Remaining items are repository maintenance tasks, not unresolved v1.1.0 code, test, packaging, or documentation defects.

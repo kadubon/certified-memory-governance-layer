@@ -25,9 +25,9 @@ All notable changes to CMGL are documented here.
 - Release docs explicitly require PyPI Trusted Publisher setup and prohibit long-lived PyPI tokens.
 - Security docs cover live adapter secrets, provider-key handling, and leaked receipt/log response.
 
-### Known Manual Release Gates
+### Historical Manual Release Notes
 
-- `cmgl` is not yet published on PyPI at the time of this preparation; the first upload must be performed through PyPI Trusted Publishing.
-- GitHub Releases are currently empty and require a human-created `v1.1.0` release.
+- `cmgl` v1.1.0 is published on PyPI through Trusted Publishing.
+- GitHub Release `v1.1.0` has been created.
 - Five Dependabot PRs for GitHub Actions updates are open and should be reviewed separately.
 - GitHub repository topic `puthon` should be corrected manually to `python`.

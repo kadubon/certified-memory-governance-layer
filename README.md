@@ -20,15 +20,13 @@ CMGL proves procedural admissibility under declared policies, evidence, receipts
 
 ## Install And Release Status
 
-`cmgl` is prepared as a stable `1.1.0` package. The PyPI project name currently has no published release, so the PyPI install command below is the intended install path after the manual PyPI Trusted Publishing gate is completed.
-
-After PyPI publication:
+CMGL v1.1.0 is available on PyPI.
 
 ```bash
 uv add cmgl
 ```
 
-Before PyPI publication, install from GitHub source:
+For development from GitHub source:
 
 ```bash
 uv add "cmgl @ git+https://github.com/kadubon/certified-memory-governance-layer.git"
@@ -42,7 +40,7 @@ uv run cmgl version
 uv run cmgl doctor --skip-ledger
 ```
 
-Final tag creation, GitHub Release creation, and PyPI upload are manual release gates. See `docs/release-v1.1.0-checklist.md`.
+Release checklist documents are retained as historical/internal maintenance records. See `docs/release-v1.1.0-checklist.md`.
 
 ## 10-Minute Offline Integration
 
