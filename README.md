@@ -1,6 +1,6 @@
 # CMGL
 
-Certified Memory Governance Layer for long-running AI agents. Current public API status: `1.1.1`.
+Certified Memory Governance Layer for long-running AI agents. Current public API status: `1.1.2`.
 
 CMGL is a local Python governance layer that sits between an agent runtime and a memory backend. It is not a memory database. It decides whether a memory item is procedurally admissible, records evidence in an append-only ledger, and explains every admit/block decision with typed receipts.
 
@@ -20,7 +20,7 @@ CMGL proves procedural admissibility under declared policies, evidence, receipts
 
 ## Install And Release Status
 
-CMGL v1.1.1 is available on PyPI.
+CMGL v1.1.2 is available on PyPI.
 
 ```bash
 uv add cmgl
@@ -40,7 +40,7 @@ uv run cmgl version
 uv run cmgl doctor --skip-ledger
 ```
 
-Release checklist documents are retained as historical/internal maintenance records. See `docs/release-v1.1.0-checklist.md`.
+Release checklist documents are retained as historical/internal maintenance records. See `docs/release-v1.1.2-checklist.md`.
 
 ## 10-Minute Offline Integration
 
@@ -126,6 +126,8 @@ assert layer.verify_ledger().ok
 `GovernanceReceiptBundle` is the recommended public result object. It contains the event, candidate, evidence, promotion receipt, ledger append receipts, optional adapter operation receipt, conformance status, and canonical digest.
 
 The stable public API is documented in `docs/api-stability.md`. Top-level imports from `cmgl` are stable when listed there; deeper modules under `cmgl.contracts.*`, `cmgl.commands.*`, and adapter implementation helpers are more specialized and may evolve with deprecation notes.
+
+For the formal claim boundary, see `docs/formal-invariants.md` and `docs/proof-obligations.md`. For backend mutation models such as add-only stores, temporal graphs, and tool/store-shaped APIs, see `docs/backend-semantics.md` and `docs/current-view.md`.
 
 ## Custom Backend Guard
 

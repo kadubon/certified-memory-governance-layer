@@ -4,11 +4,12 @@ from datetime import timedelta
 from pathlib import Path
 
 import cmgl
+from cmgl.stable_api import STABLE_API_SYMBOLS
 from cmgl.time import now_utc
 
 
 def test_stable_top_level_api_imports_and_smoke(tmp_path) -> None:  # type: ignore[no-untyped-def]
-    assert cmgl.__version__ == "1.1.1"
+    assert cmgl.__version__ == "1.1.2"
 
     layer = cmgl.GovernanceLayer(ledger=tmp_path / "ledger.jsonl")
     assert isinstance(layer.policy, cmgl.AdmissionPolicy)
@@ -63,3 +64,8 @@ def test_api_stability_doc_names_core_symbols() -> None:
         "filter_retrieval",
     ]:
         assert symbol in text
+
+
+def test_stable_api_symbol_list_imports_from_top_level() -> None:
+    missing = [symbol for symbol in STABLE_API_SYMBOLS if not hasattr(cmgl, symbol)]
+    assert missing == []

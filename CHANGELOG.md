@@ -2,6 +2,27 @@
 
 All notable changes to CMGL are documented here.
 
+## 1.1.2 - 2026-05-14
+
+### Added
+
+- Formal invariant and proof-obligation documentation for CMGL's bounded procedural guarantees.
+- Dev-only property tests for canonicalization, ledger integrity, policy blocking, authority non-bypass, retrieval explainability, and conformance fixtures.
+- Machine-readable stable API symbol metadata and import tests.
+- Backend semantics and current-view documentation for append-only/add-only, temporal graph, and tool/store-shaped backends.
+- v1.1.2 release checklist and release-note draft.
+
+### Changed
+
+- Current-view reconstruction is documented and tested as a strict retrieval-governance helper over append-only evidence.
+- Adapter contract documentation now calls out contract guarantees, out-of-scope behavior, and external SDK version drift policy.
+- Publishability checks now target the prepared v1.1.2 release while leaving PyPI publication, tags, and GitHub Releases as manual gates.
+
+### Security
+
+- No runtime dependency increase. Hypothesis is dev-only.
+- Core checks remain local, deterministic, no-network, no-secret, and no-LLM.
+
 ## 1.1.1 - 2026-05-14
 
 ### Changed

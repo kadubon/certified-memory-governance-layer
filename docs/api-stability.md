@@ -1,6 +1,7 @@
 # API Stability
 
 CMGL follows semantic versioning for documented stable APIs beginning with `1.1.0`.
+CMGL v1.1.2 preserves all documented v1.1.1 stable top-level imports.
 
 ## Stable API
 
@@ -37,6 +38,12 @@ The following top-level imports from `cmgl` are stable for the v1 line:
 - `sha256_digest`
 
 Stable means these symbols remain importable and retain compatible behavior within v1. Breaking changes require a v2 release unless a security fix makes compatibility impossible.
+
+The machine-readable list in `src/cmgl/stable_api.py` is the test source of
+truth for the stable top-level import set. `cmgl.__all__` is intentionally
+wider than the stable list for compatibility with earlier v1.1 releases. Those
+additional top-level exports are compatibility-retained but should be treated as
+provisional unless they are listed above.
 
 ## Provisional API
 

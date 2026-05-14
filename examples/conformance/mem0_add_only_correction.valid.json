@@ -1,0 +1,7 @@
+{
+  "correction_model": "add-only",
+  "new_memory_id": "mem0-new",
+  "old_memory_id": "mem0-old",
+  "schema_version": "cmgl.conformance_fixture.v1",
+  "supersession": "old record is audit-visible and blocked; new certified record is current"
+}

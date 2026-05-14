@@ -172,3 +172,29 @@ Required environment:
 Provider keys must come from the process environment or a secret manager. Do not put keys in `cmgl.toml`, ledgers, examples, fixtures, or issue reports.
 
 Default behavior is skip-on-missing-provider-env. This keeps public release/main workflows usable before every optional live provider is configured. Use `--require-live-env` when your organization wants Mem0/Graphiti missing secrets to fail the live gate.
+
+## Contract Guarantees
+
+CMGL adapter shims guarantee only the local contract they implement:
+
+- Core imports do not require optional adapter dependencies.
+- Explicit dependency checks fail with `OptionalDependencyError` and both `pip` and `uv` install hints.
+- Protected write/update/delete operations call external clients only after CMGL admits the local governance action.
+- Missing authority produces a not-called adapter receipt or deterministic block.
+- External persistence failure produces a failed adapter receipt and quarantine evidence, or raises `AdapterOperationError` when the caller opts into raising.
+- Retrieval helpers normalize records into `MemoryEvent`, downgrade insufficiently sourced records unless `trusted_results=True`, and return reason-coded `RetrievalDecision` objects.
+
+## Out Of Scope
+
+CMGL does not provide cloud accounts, Neo4j instances, LLM providers, embedding providers, framework runtime orchestration, or external SDK compatibility certification. It does not guarantee that a backend has update/delete semantics; add-only backends can represent corrections through new records plus supersession or tombstone evidence.
+
+## Version Drift Policy
+
+The shims are tested against fake-client protocols and optional live-smoke workflows. External SDK minor releases may change method names, return shapes, or setup requirements. Run:
+
+```bash
+uv run cmgl adapters doctor --json
+uv run cmgl adapters live-smoke --target all --dry-run --json
+```
+
+For production environments with configured secrets, run protected live smoke before release promotion. If an external SDK changes, prefer a small adapter compatibility patch rather than coupling CMGL core to that SDK.

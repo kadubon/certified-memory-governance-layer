@@ -1,0 +1,6 @@
+{
+  "expected_reason_code": "lane.summary.summary_not_fact",
+  "lane": "summary",
+  "memory_id": "fixture-summary",
+  "schema_version": "cmgl.conformance_fixture.v1"
+}

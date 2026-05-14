@@ -1,0 +1,13 @@
+{
+  "authority_scope": "graphiti:fixture",
+  "backend": "graphiti",
+  "fact": "User previously preferred morning meetings.",
+  "metadata": {
+    "source_digest": "sha256:2dc815a9cf7b6bf38c7bc32d97feec1ebfbba6745fba363ff4058e4db6c5a22b"
+  },
+  "reference_time": "2026-05-14T00:00:00Z",
+  "schema_version": "cmgl.conformance_fixture.v1",
+  "status": "superseded",
+  "valid_to": "2026-05-14T01:00:00Z",
+  "uuid": "graphiti-fixture-1"
+}

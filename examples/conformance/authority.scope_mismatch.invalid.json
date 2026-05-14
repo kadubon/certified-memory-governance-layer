@@ -1,0 +1,5 @@
+{
+  "expected_reason_code": "authority.scope_mismatch",
+  "memory_id": "fixture-authority-scope-mismatch",
+  "schema_version": "cmgl.conformance_fixture.v1"
+}

@@ -44,7 +44,8 @@ def test_optional_adapter_missing_dependency_message(monkeypatch) -> None:  # ty
     monkeypatch.setattr(mem0, "import_module", missing)
     with pytest.raises(OptionalDependencyError) as exc:
         mem0.load_mem0()
-    assert "cmgl[mem0]" in str(exc.value)
+    assert 'pip install "cmgl[mem0]"' in str(exc.value)
+    assert 'uv add "cmgl[mem0]"' in str(exc.value)
 
 
 @pytest.mark.parametrize(
@@ -64,6 +65,8 @@ def test_optional_adapters_import_lazily(module, loader, extra, monkeypatch) -> 
     with pytest.raises(OptionalDependencyError) as exc:
         loader()
     assert extra in str(exc.value)
+    assert "pip install" in str(exc.value)
+    assert "uv add" in str(exc.value)
 
 
 class FakeMem0Client:
@@ -134,6 +137,12 @@ def test_mem0_adapter_normalizes_and_guards_persistence() -> None:
     assert filtered.admitted_events[0].backend == "mem0"
     assert adapter.get("mem0-1").memory_id == "mem0-1"
     assert len(adapter.get_all()) == 2
+    untrusted = mem0.Mem0Adapter(client, authority_scope="user:adapter")
+    assert untrusted.search("no explicit evidence")[0].status.value == "certified"
+    client.records = [{"id": "mem0-unsourced", "memory": "unsourced"}]
+    assert untrusted.search("unsourced")[0].status.value == "candidate"
+    trusted = mem0.Mem0Adapter(client, authority_scope="user:adapter", trusted_results=True)
+    assert trusted.search("unsourced")[0].status.value == "certified"
 
     with pytest.raises(AdapterOperationError):
         adapter.update("unbound", "new content")
@@ -207,6 +216,34 @@ def test_graphiti_adapter_async_guard_and_filter() -> None:
         assert filtered.decision.admitted_memory_ids == ["episode-1"]
         search_under = await adapter.search_("edge")
         assert search_under[0].memory_id == "edge-1"
+
+    asyncio.run(run())
+
+
+def test_graphiti_adapter_preserves_temporal_and_provenance_fields() -> None:
+    async def run() -> None:
+        class TemporalGraphitiClient(FakeGraphitiClient):
+            async def search(self, query, **kwargs):  # type: ignore[no-untyped-def]
+                return [
+                    {
+                        "uuid": "temporal-1",
+                        "fact": "Temporal fact",
+                        "status": "certified",
+                        "source_description": "episode source",
+                        "group_ids": ["group-a"],
+                        "reference_time": "2026-05-14T00:00:00Z",
+                        "valid_to": "2026-05-15T00:00:00Z",
+                    }
+                ]
+
+        adapter = graphiti.GraphitiAdapter(TemporalGraphitiClient())
+        event = (await adapter.search("temporal"))[0]
+        assert event.memory_id == "temporal-1"
+        assert event.valid_from is not None
+        assert event.valid_to is not None
+        assert event.metadata["source_description"] == "episode source"
+        assert event.metadata["group_ids"] == ["group-a"]
+        assert event.source_event_hashes
 
     asyncio.run(run())
 

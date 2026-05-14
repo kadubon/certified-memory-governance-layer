@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 
 from cmgl.digest import sha256_digest
+from cmgl.exceptions import LedgerError
 from cmgl.ledger import AppendOnlyLedger
 from cmgl.models import (
     CurrentMemoryView,
@@ -77,7 +78,13 @@ def current_memory_view_from_events(events: list[MemoryEvent]) -> CurrentMemoryV
     return CurrentMemoryView(**view_body, view_digest=sha256_digest(view_body))
 
 
-def current_memory_view_from_ledger(ledger: AppendOnlyLedger) -> CurrentMemoryView:
+def current_memory_view_from_ledger(
+    ledger: AppendOnlyLedger, *, strict: bool = True
+) -> CurrentMemoryView:
+    if strict:
+        verification = ledger.verify_prefix()
+        if not verification.ok:
+            raise LedgerError("cannot construct current memory view from unverifiable ledger")
     events: list[MemoryEvent] = []
     for record in ledger.iter_records():
         if record.record_type == "memory_event":

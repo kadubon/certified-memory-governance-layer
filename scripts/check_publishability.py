@@ -17,7 +17,7 @@ except ModuleNotFoundError:  # pragma: no cover
     import tomli as tomllib  # type: ignore[no-redef]
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "1.1.1"
+EXPECTED_VERSION = "1.1.2"
 MANUAL_CHECKLIST = [
     "Verify PyPI project 'cmgl' remains owned by this project and Trusted Publisher settings remain correct.",
     "Fix GitHub repository topic typo 'puthon' to 'python'.",
@@ -68,8 +68,10 @@ def main() -> int:
 
     errors.extend(check_deleted_files_absent())
     errors.extend(check_deleted_references())
+    errors.extend(check_public_plans_absent())
     errors.extend(check_required_files())
     errors.extend(check_versions())
+    errors.extend(check_runtime_dependencies())
     errors.extend(check_lockfile())
     errors.extend(check_readme_release_docs())
     errors.extend(check_env_files())
@@ -131,6 +133,14 @@ def check_deleted_references() -> list[str]:
     return errors
 
 
+def check_public_plans_absent() -> list[str]:
+    return [
+        f"root release planning file must not be committed: {path.name}"
+        for path in ROOT.glob("PLAN_*.md")
+        if path.is_file()
+    ]
+
+
 def check_required_files() -> list[str]:
     required = [
         "LICENSE",
@@ -140,8 +150,12 @@ def check_required_files() -> list[str]:
         "CHANGELOG.md",
         "uv.lock",
         "docs/api-stability.md",
-        "docs/release-v1.1.0-checklist.md",
-        "docs/releases/v1.1.1.md",
+        "docs/formal-invariants.md",
+        "docs/proof-obligations.md",
+        "docs/backend-semantics.md",
+        "docs/current-view.md",
+        "docs/release-v1.1.2-checklist.md",
+        "docs/releases/v1.1.2.md",
         "docs/security-github-publication-checklist.md",
     ]
     return [
@@ -190,6 +204,18 @@ def check_versions() -> list[str]:
     return errors
 
 
+def check_runtime_dependencies() -> list[str]:
+    project = read_project_metadata()
+    allowed = ("pydantic", "rich", "tomli", "typer")
+    errors: list[str] = []
+    for requirement in project.get("dependencies", []):
+        normalized = str(requirement).split(";", 1)[0].strip().lower()
+        package = re.split(r"[<>=!~\[]", normalized, maxsplit=1)[0].strip()
+        if package not in allowed:
+            errors.append(f"unexpected runtime dependency for v1.1.2 hardening: {requirement}")
+    return errors
+
+
 def check_lockfile() -> list[str]:
     return run_command(["uv", "lock", "--check"], "uv lock --check")
 
@@ -198,12 +224,12 @@ def check_readme_release_docs() -> list[str]:
     errors: list[str] = []
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     required_readme_phrases = [
-        "CMGL v1.1.1 is available on PyPI.",
+        "CMGL v1.1.2 is available on PyPI.",
         "For development from GitHub source",
         "uv add cmgl",
         'uv add "cmgl @ git+https://github.com/kadubon/certified-memory-governance-layer.git"',
         "docs/api-stability.md",
-        "docs/release-v1.1.0-checklist.md",
+        "docs/release-v1.1.2-checklist.md",
     ]
     for phrase in required_readme_phrases:
         if phrase not in readme:
@@ -222,12 +248,13 @@ def check_readme_release_docs() -> list[str]:
         if command not in readme:
             errors.append(f"README missing documented quality command: {command}")
 
-    release_checklist = (ROOT / "docs" / "release-v1.1.0-checklist.md").read_text(encoding="utf-8")
+    release_checklist = (ROOT / "docs" / "release-v1.1.2-checklist.md").read_text(encoding="utf-8")
     for phrase in [
         "PyPI Trusted Publisher",
         "Fix repository topic typo `puthon` to `python`",
         "Dependabot PRs",
         "GitHub Release",
+        "post-release PyPI long-description check",
     ]:
         if phrase not in release_checklist:
             errors.append(f"release checklist missing manual gate: {phrase}")
@@ -263,8 +290,10 @@ def check_workflows() -> list[str]:
             errors.append("publish workflow must use OIDC id-token permission")
         if "password:" in text or "PYPI_API_TOKEN" in text:
             errors.append("publish workflow must not use stored PyPI tokens")
-        if "release:" not in text or "tags:" not in text:
-            errors.append("publish workflow must trigger only on release/tag publication paths")
+        if "release:" not in text:
+            errors.append("publish workflow must trigger on GitHub Release publication")
+        if "tags:" in text:
+            errors.append("publish workflow must not also trigger on tag pushes")
     return errors
 
 

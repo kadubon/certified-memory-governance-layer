@@ -1,0 +1,24 @@
+{
+  "agent_id": "agent",
+  "authority_scope": "user:fixture",
+  "backend": "inmemory",
+  "checker_version": "fixture",
+  "content": "User prefers morning meetings.",
+  "content_digest": "sha256:25a0f7f593c2d9aba3ca7e9cfbd8bc66fc7a49123c906032b94f4b7cfc77485b",
+  "created_at": "2026-05-14T00:57:59.286697Z",
+  "event_type": "memory_write",
+  "lane": "user_claim",
+  "memory_id": "fixture-certified",
+  "memory_update_id": "u1",
+  "metadata": {},
+  "provenance_depth": 0,
+  "run_id": "fixture",
+  "schema_version": "cmgl.memory_event.v1",
+  "source_event_hashes": [
+    "sha256:2dc815a9cf7b6bf38c7bc32d97feec1ebfbba6745fba363ff4058e4db6c5a22b"
+  ],
+  "status": "certified",
+  "trace_id": "fixture",
+  "valid_from": null,
+  "valid_to": null
+}

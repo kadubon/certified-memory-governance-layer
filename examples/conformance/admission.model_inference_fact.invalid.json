@@ -1,0 +1,6 @@
+{
+  "expected_reason_code": "lane.model_inference.blocked_as_fact",
+  "lane": "model_inference",
+  "memory_id": "fixture-model-inference",
+  "schema_version": "cmgl.conformance_fixture.v1"
+}

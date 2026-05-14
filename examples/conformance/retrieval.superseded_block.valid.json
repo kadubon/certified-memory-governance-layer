@@ -1,0 +1,5 @@
+{
+  "blocked_memory_id": "fixture-superseded",
+  "expected_reason_code": "terminal_status.superseded",
+  "schema_version": "cmgl.conformance_fixture.v1"
+}

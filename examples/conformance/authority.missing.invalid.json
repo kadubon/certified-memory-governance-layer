@@ -1,0 +1,5 @@
+{
+  "expected_reason_code": "authority.bundle_missing",
+  "memory_id": "fixture-authority-missing",
+  "schema_version": "cmgl.conformance_fixture.v1"
+}

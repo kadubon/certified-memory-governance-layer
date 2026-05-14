@@ -1,0 +1,25 @@
+{
+  "accountability_budget": 0,
+  "alias_hazards": [],
+  "certificate_digest": "sha256:ff0814258c560dd0d79c0443ef88a984089a9e3fca5d53896fb1e749fbfff2ec",
+  "collapse_budget": 0,
+  "compressed_memory_id": "summary-1",
+  "compression_ratio": 0.5,
+  "decision": "admit_as_summary_not_fact",
+  "lost_exceptions": [],
+  "lost_uncertainties": [
+    "user preference may change"
+  ],
+  "lost_uncertainty_severity": "none",
+  "recoverability_check": "pass",
+  "recoverability_probes": {},
+  "schema_version": "cmgl.compression_certificate.v1",
+  "source_coverage": 1.0,
+  "source_digest_map": {
+    "source-1": "sha256:ffa6a744d78d28386438b4a8e8ee32f56718633735057b1b5ddfb5d224d45d98"
+  },
+  "source_memory_ids": [
+    "source-1"
+  ],
+  "timestamp": "2026-05-14T00:57:59.286938Z"
+}

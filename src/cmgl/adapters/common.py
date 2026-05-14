@@ -173,6 +173,9 @@ def record_to_memory_event(
 
     mapping = object_to_mapping(record)
     metadata = _coerce_mapping(_first_present(mapping, ("metadata", "payload", "properties")))
+    for metadata_key in ("source_description", "group_ids", "reference_time"):
+        if metadata_key in mapping and metadata_key not in metadata:
+            metadata[metadata_key] = _jsonable(mapping[metadata_key])
     content = _extract_content(record, mapping)
     content_digest = str(mapping.get("content_digest") or sha256_digest(content))
     memory_id = str(_first_present(mapping, _ID_KEYS) or _stable_record_id(record, fallback_index))
@@ -211,7 +214,7 @@ def record_to_memory_event(
         source_event_hashes=source_hashes,
         lane=event_lane,
         provenance_depth=int(mapping.get("provenance_depth") or 0),
-        valid_from=_coerce_datetime(mapping.get("valid_from")),
+        valid_from=_coerce_datetime(mapping.get("valid_from") or mapping.get("reference_time")),
         valid_to=_coerce_datetime(mapping.get("valid_to")),
         authority_scope=str(mapping.get("authority_scope") or authority_scope),
         status=event_status,

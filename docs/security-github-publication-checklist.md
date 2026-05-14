@@ -19,7 +19,7 @@ Before public release, manually enable or verify:
 - use environment variables for local API keys
 - verify no real `.env`, logs, notebooks, or private datasets are committed
 - review `LICENSE` and `THIRD_PARTY_NOTICES.md` before release
-- review `CHANGELOG.md`, `docs/api-stability.md`, and `docs/release-v1.1.0-checklist.md`
+- review `CHANGELOG.md`, `docs/api-stability.md`, and the release checklist for the target version, for example `docs/release-v1.1.2-checklist.md`
 - run `uv lock --check`
 - run tests, lint, type check, and `pip-audit`
 - run `uv run cmgl doctor --skip-ledger`, `uv run cmgl validate canonical`, and `uv run python scripts/check_publishability.py`
