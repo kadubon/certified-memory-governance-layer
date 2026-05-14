@@ -56,7 +56,7 @@ def _authority_bundle(
 
 
 def test_version_bumped_for_v1() -> None:
-    assert __version__ == "1.1.0"
+    assert __version__ == "1.1.1"
 
 
 def test_config_loading_defaults_and_invalid_rejection(tmp_path) -> None:  # type: ignore[no-untyped-def]

@@ -1,6 +1,6 @@
 # CMGL
 
-Certified Memory Governance Layer for long-running AI agents. Current public API status: `1.1.0`.
+Certified Memory Governance Layer for long-running AI agents. Current public API status: `1.1.1`.
 
 CMGL is a local Python governance layer that sits between an agent runtime and a memory backend. It is not a memory database. It decides whether a memory item is procedurally admissible, records evidence in an append-only ledger, and explains every admit/block decision with typed receipts.
 
@@ -20,7 +20,7 @@ CMGL proves procedural admissibility under declared policies, evidence, receipts
 
 ## Install And Release Status
 
-CMGL v1.1.0 is available on PyPI.
+CMGL v1.1.1 is available on PyPI.
 
 ```bash
 uv add cmgl

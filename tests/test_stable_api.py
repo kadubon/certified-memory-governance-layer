@@ -8,7 +8,7 @@ from cmgl.time import now_utc
 
 
 def test_stable_top_level_api_imports_and_smoke(tmp_path) -> None:  # type: ignore[no-untyped-def]
-    assert cmgl.__version__ == "1.1.0"
+    assert cmgl.__version__ == "1.1.1"
 
     layer = cmgl.GovernanceLayer(ledger=tmp_path / "ledger.jsonl")
     assert isinstance(layer.policy, cmgl.AdmissionPolicy)

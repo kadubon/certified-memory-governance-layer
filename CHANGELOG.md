@@ -2,6 +2,20 @@
 
 All notable changes to CMGL are documented here.
 
+## 1.1.1 - 2026-05-14
+
+### Changed
+
+- Removed pre-publication wording from the PyPI long description source in `README.md`.
+- Clarified GitHub source installation as a development path now that `cmgl` is available on PyPI.
+- Reframed v1.1.0 release notes as historical release notes with completed release gates separated from maintenance items.
+- Updated GitHub Actions dependencies from open Dependabot PRs:
+  - `actions/setup-python` v5 to v6.
+  - `actions/checkout` v4 to v6.
+  - `astral-sh/setup-uv` v5 to v7.
+  - `github/codeql-action` v3 to v4.
+  - `actions/dependency-review-action` v4 to v5.
+
 ## 1.1.0 - 2026-05-14
 
 ### Added

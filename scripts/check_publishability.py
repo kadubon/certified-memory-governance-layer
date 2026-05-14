@@ -17,7 +17,7 @@ except ModuleNotFoundError:  # pragma: no cover
     import tomli as tomllib  # type: ignore[no-redef]
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "1.1.0"
+EXPECTED_VERSION = "1.1.1"
 MANUAL_CHECKLIST = [
     "Verify PyPI project 'cmgl' remains owned by this project and Trusted Publisher settings remain correct.",
     "Fix GitHub repository topic typo 'puthon' to 'python'.",
@@ -141,7 +141,7 @@ def check_required_files() -> list[str]:
         "uv.lock",
         "docs/api-stability.md",
         "docs/release-v1.1.0-checklist.md",
-        "docs/releases/v1.1.0.md",
+        "docs/releases/v1.1.1.md",
         "docs/security-github-publication-checklist.md",
     ]
     return [
@@ -198,7 +198,7 @@ def check_readme_release_docs() -> list[str]:
     errors: list[str] = []
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     required_readme_phrases = [
-        "CMGL v1.1.0 is available on PyPI.",
+        "CMGL v1.1.1 is available on PyPI.",
         "For development from GitHub source",
         "uv add cmgl",
         'uv add "cmgl @ git+https://github.com/kadubon/certified-memory-governance-layer.git"',
