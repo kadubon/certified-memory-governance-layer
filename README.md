@@ -6,6 +6,13 @@ CMGL is a local Python governance layer that sits between an agent runtime and a
 
 The project is designed for agent systems that already use Mem0, Graphiti, LangMem, LangGraph, or a custom store and need a deterministic control point before memory is written or placed into model context.
 
+## Agent Skill
+
+This repository includes an Agent Skills-compatible workflow at
+[`.agents/skills/certified-memory-governance-layer/SKILL.md`](.agents/skills/certified-memory-governance-layer/SKILL.md).
+Compatible agents can discover it from this repository, or copy it to a supported user skills directory
+such as `~/.agents/skills/certified-memory-governance-layer/`. The canonical implementation remains this repository.
+
 ## What CMGL Can Do
 
 - Normalize backend-specific memory records into `MemoryEvent`.
