@@ -1,0 +1,31 @@
+{
+  "skill": "certified-memory-governance-layer",
+  "positive": [
+    {"prompt":"Filter stale memories returned from Graphiti before my agent sees them.","reason":"governed retrieval"},
+    {"prompt":"Require authority before this LangGraph agent updates user memory.","reason":"memory mutation"},
+    {"prompt":"My Mem0 store contains contradicted memories.","reason":"memory status"},
+    {"prompt":"Add an append-only ledger for agent memory writes.","reason":"memory ledger"},
+    {"prompt":"Quarantine contaminated persistent memories.","reason":"contamination lane"},
+    {"prompt":"Give each memory write a governance receipt.","reason":"typed receipt"},
+    {"prompt":"Block unauthorized deletes in our long-running agent memory.","reason":"protected action"},
+    {"prompt":"Prevent model inference from becoming factual memory.","reason":"memory safety"},
+    {"prompt":"Govern custom backend retrieval by provenance and expiry.","reason":"custom backend"},
+    {"prompt":"Use CMGL with LangMem.","reason":"supported adapter"}
+  ],
+  "negative": [
+    {"prompt":"Explain vector similarity search.","reason":"generic search"},
+    {"prompt":"Design a PostgreSQL schema.","reason":"ordinary database"},
+    {"prompt":"Summarize these chat messages.","reason":"generic summarization"},
+    {"prompt":"What is RAG?","reason":"generic RAG"},
+    {"prompt":"How does Mem0 work?","reason":"no governance task"},
+    {"prompt":"Is this remembered claim true?","reason":"truth claim"},
+    {"prompt":"Benchmark my LLM.","reason":"benchmark routing"},
+    {"prompt":"Write a Redis cache entry.","reason":"no governance dimension"}
+  ],
+  "ambiguous": [
+    {"prompt":"Store this preference.","expected":"activate only if authority, provenance, or governed memory is requested","reason":"simple storage alone is insufficient"},
+    {"prompt":"This receipt expired.","expected":"activate if it is a CMGL memory receipt","reason":"receipt object required"},
+    {"prompt":"Check evidence provenance.","expected":"route to VEK unless the evidence governs memory","reason":"primary object decides"},
+    {"prompt":"Keep memories safe.","expected":"ask for backend/action/scope or select CMGL if persistent/retrieved agent memory is explicit","reason":"scope may be vague"}
+  ]
+}
